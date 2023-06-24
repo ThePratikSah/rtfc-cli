@@ -1,10 +1,10 @@
 # Rtfc CLI
+
+A command-line interface (CLI) tool for generating React components with ease.
+
 [![npm version](https://img.shields.io/npm/v/rtfc-cli.svg)](https://www.npmjs.com/package/rtfc-cli)
 [![GitHub stars](https://img.shields.io/github/stars/ThePratikSah/rtfc-cli.svg?style=social)](https://github.com/ThePratikSah/rtfc-cli/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/ThePratikSah/rtfc-cli.svg?style=social)](https://github.com/ThePratikSah/rtfc-cli/network/members)
-
-
-A command-line interface (CLI) tool for generating React components with ease.
 
 ## Installation
 
