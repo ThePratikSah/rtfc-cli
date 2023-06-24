@@ -1,23 +1,33 @@
 {
-  "name": "rtfc-cli",
-  "version": "1.0.1",
-  "description": "",
-  "bin": {
-    "rc": "cli.js"
-  },
-  "preferGlobal": true,
-  "engines": {
-    "node": ">=12.0.0"
-  },
-  "author": "Pratik Sah",
-  "license": "MIT",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "dependencies": {
-    "commander": "^11.0.0",
-    "fs": "^0.0.1-security",
-    "path": "^0.12.7"
-  }
+    "name": "rtfc-cli",
+    "version": "1.0.2",
+    "description": "",
+    "bin": {
+        "rc": "cli.js"
+    },
+    "preferGlobal": true,
+    "engines": {
+        "node": ">=12.0.0"
+    },
+    "author": "Pratik Sah",
+    "license": "MIT",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "cli",
+        "react-cli",
+        "react",
+        "rtfc-cli",
+        "rtfc"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/ThePratikSah/rtfc-cli.git"
+    },
+    "dependencies": {
+        "commander": "^11.0.0",
+        "fs": "^0.0.1-security",
+        "path": "^0.12.7"
+    }
 }
