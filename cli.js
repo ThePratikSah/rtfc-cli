@@ -20,7 +20,15 @@ program
             componentDir,
             `${capitalize(name)}.${isTypeScript ? "tsx" : "jsx"}`
         );
-        const cssModuleFile = path.join(componentDir, `${capitalize(name)}.module.css`);
+        const cssModuleFile = path.join(
+            componentDir,
+            `${capitalize(name)}.module.css`
+        );
+
+        if (fs.existsSync(componentDir)) {
+            console.log(`Component '${name}' already exists.`);
+            process.exit(1);
+        }
 
         createDirectory(srcDir);
         createDirectory(componentsDir);
