@@ -18,9 +18,9 @@ program
         const componentDir = path.join(componentsDir, name);
         const componentFile = path.join(
             componentDir,
-            `${name}.${isTypeScript ? "tsx" : "jsx"}`
+            `${capitalize(name)}.${isTypeScript ? "tsx" : "jsx"}`
         );
-        const cssModuleFile = path.join(componentDir, `${name}.module.css`);
+        const cssModuleFile = path.join(componentDir, `${capitalize(name)}.module.css`);
 
         createDirectory(srcDir);
         createDirectory(componentsDir);
