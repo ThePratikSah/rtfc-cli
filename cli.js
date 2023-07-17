@@ -3,7 +3,7 @@ const { program } = require("commander");
 const fs = require("fs");
 const path = require("path");
 
-program.version("1.1.0").description("React CLI to generate components");
+program.version("1.1.1").description("React CLI to generate components");
 
 program
   .command("generate <name>")
@@ -22,10 +22,6 @@ program
       componentDir,
       `${capitalize(name)}.${isTypeScript ? "tsx" : "jsx"}`
     );
-    const cssModuleFile = path.join(
-      componentDir,
-      `${capitalize(name)}.module.css`
-    );
 
     if (fs.existsSync(componentDir)) {
       console.log(`Component '${name}' already exists.`);
@@ -36,19 +32,33 @@ program
     createDirectory(componentsDir);
     createDirectory(componentDir);
 
-    const componentTemplate = options.class
-      ? isTypeScript
-        ? classComponentTemplateTSX(name)
-        : classComponentTemplateJSX(name)
-      : isTypeScript
-      ? functionalComponentTemplateTSX(name, options.noCss)
-      : functionalComponentTemplateJSX(name, options.noCss);
+    let componentCode = "";
 
-    fs.writeFileSync(componentFile, componentTemplate);
+    if (options.class) {
+      componentCode = isTypeScript
+        ? classComponentTemplateTSX(name)
+        : classComponentTemplateJSX(name);
+    } else {
+      componentCode = isTypeScript
+        ? functionalComponentTemplateTSX(name, options.noCss)
+        : functionalComponentTemplateJSX(name, options.noCss);
+    }
+
+    fs.writeFileSync(componentFile, componentCode);
 
     if (!options.noCss) {
-      const cssTemplate = cssModuleTemplate(name);
-      fs.writeFileSync(cssModuleFile, cssTemplate);
+      const cssModuleFile = path.join(
+        componentDir,
+        `${capitalize(name)}.module.css`
+      );
+
+      const cssModuleTemplate = `/* Styles for ${capitalize(name)} component */
+.container {
+  margin: 10px;
+  padding: 10px;
+}`;
+
+      fs.writeFileSync(cssModuleFile, cssModuleTemplate);
     }
 
     console.log(`Component '${name}' generated successfully.`);
@@ -153,14 +163,5 @@ const ${capitalize(name)}: React.FC<${capitalize(name)}Props> = () => {
 };
 
 export default ${capitalize(name)};
-`;
-}
-
-function cssModuleTemplate(name) {
-  return `/* Styles for ${capitalize(name)} component */
-.container {
-  margin: 10px;
-  padding: 10px;
-}
 `;
 }
