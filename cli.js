@@ -3,13 +3,14 @@ const { program } = require("commander");
 const fs = require("fs");
 const path = require("path");
 
-program.version("1.0.5").description("React CLI");
+program.version("1.1.0").description("React CLI to generate components");
 
 program
   .command("generate <name>")
   .alias("g")
   .description("Generate a React component")
   .option("-c, --class", "Generate a class component")
+  .option("-n, --no-css", "Do not generate CSS file")
   .action((name, options) => {
     const rootDir = findRootDirectory(process.cwd());
     const isTypeScript = checkTypeScript(rootDir);
@@ -35,83 +36,20 @@ program
     createDirectory(componentsDir);
     createDirectory(componentDir);
 
-    let componentCode = "";
+    const componentTemplate = options.class
+      ? isTypeScript
+        ? classComponentTemplateTSX(name)
+        : classComponentTemplateJSX(name)
+      : isTypeScript
+      ? functionalComponentTemplateTSX(name, options.noCss)
+      : functionalComponentTemplateJSX(name, options.noCss);
 
-    if (options.class) {
-      componentCode = isTypeScript
-        ? `import React from 'react';
-import styles from './${name}.module.css';
+    fs.writeFileSync(componentFile, componentTemplate);
 
-interface ${capitalize(name)}Props {}
-
-class ${capitalize(name)} extends React.Component<${capitalize(name)}Props> {
-  render() {
-    return (
-      <div className={styles.container}>
-        <h1>${capitalize(name)}</h1>
-      </div>
-    );
-  }
-}
-
-export default ${capitalize(name)};
-`
-        : `import React from 'react';
-import styles from './${name}.module.css';
-
-class ${capitalize(name)} extends React.Component {
-  render() {
-    return (
-      <div className={styles.container}>
-        <h1>${capitalize(name)}</h1>
-      </div>
-    );
-  }
-}
-
-export default ${capitalize(name)};
-`;
-    } else {
-      componentCode = isTypeScript
-        ? `import React from 'react';
-import styles from './${name}.module.css';
-
-interface ${capitalize(name)}Props {}
-
-const ${capitalize(name)}: React.FC<${capitalize(name)}Props> = () => {
-  return (
-    <div className={styles.container}>
-      <h1>${capitalize(name)}</h1>
-    </div>
-  );
-};
-
-export default ${capitalize(name)};
-`
-        : `import React from 'react';
-import styles from './${name}.module.css';
-
-const ${capitalize(name)} = () => {
-  return (
-    <div className={styles.container}>
-      <h1>${capitalize(name)}</h1>
-    </div>
-  );
-};
-
-export default ${capitalize(name)};
-`;
+    if (!options.noCss) {
+      const cssTemplate = cssModuleTemplate(name);
+      fs.writeFileSync(cssModuleFile, cssTemplate);
     }
-
-    fs.writeFileSync(componentFile, componentCode);
-    fs.writeFileSync(
-      cssModuleFile,
-      `/* Styles for ${capitalize(name)} component */
-.container {
-  margin: 10px;
-  padding: 10px;
-}`
-    );
 
     console.log(`Component '${name}' generated successfully.`);
   });
@@ -144,4 +82,85 @@ function createDirectory(directoryPath) {
   if (!fs.existsSync(directoryPath)) {
     fs.mkdirSync(directoryPath);
   }
+}
+
+function classComponentTemplateJSX(name) {
+  return `import React from 'react';
+import styles from './${name}.module.css';
+
+class ${capitalize(name)} extends React.Component {
+  render() {
+    return (
+      <div className={styles.container}>
+        <h1>${capitalize(name)}</h1>
+      </div>
+    );
+  }
+}
+
+export default ${capitalize(name)};
+`;
+}
+
+function classComponentTemplateTSX(name) {
+  return `import React from 'react';
+import styles from './${name}.module.css';
+
+interface ${capitalize(name)}Props {}
+
+class ${capitalize(name)} extends React.Component<${capitalize(name)}Props> {
+  render() {
+    return (
+      <div className={styles.container}>
+        <h1>${capitalize(name)}</h1>
+      </div>
+    );
+  }
+}
+
+export default ${capitalize(name)};
+`;
+}
+
+function functionalComponentTemplateJSX(name, noCss) {
+  return `import React from 'react';
+${noCss ? "" : `import styles from './${name}.module.css';`}
+
+const ${capitalize(name)} = () => {
+  return (
+    <div ${noCss ? "" : `className={styles.container}`} >
+      <h1>${capitalize(name)}</h1>
+    </div>
+  );
+};
+
+export default ${capitalize(name)};
+`;
+}
+
+function functionalComponentTemplateTSX(name, noCss) {
+  return `import React from 'react';
+${noCss ? "" : `import styles from './${name}.module.css';`}
+
+interface ${capitalize(name)}Props {}
+
+const ${capitalize(name)}: React.FC<${capitalize(name)}Props> = () => {
+  return (
+    <div ${noCss ? "" : `className={styles.container}`} >
+      <h1>${capitalize(name)}</h1>
+    </div>
+  );
+};
+
+export default ${capitalize(name)};
+`;
+}
+
+function cssModuleTemplate(name) {
+  return `/* Styles for ${capitalize(name)} component */
+.container {
+  margin: 10px;
+  padding: 10px;
+}
+`;
 }
