@@ -19,7 +19,8 @@ npm install -g rtfc-cli
 ### Usage with npx
 
 ```shell
-npx rtfc-cli generate <componentName>
+npx rtfc-cli generate <componentName>e
+npx rtfc-cli g Home --class # for class components
 ```
 
 Replace `<componentName>` with the desired name of your React component.
